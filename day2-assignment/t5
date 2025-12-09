@@ -1,0 +1,2 @@
+function maxOf3(a,b,c){ return Math.max(a,b,c); }
+console.log(maxOf3(2,9,5)); // 9
