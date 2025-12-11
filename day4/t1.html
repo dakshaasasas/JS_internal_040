@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mini Interactive Page — Single File</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--muted:#94a3b8;--accent:#4f46e5;--glass:rgba(255,255,255,0.04)}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;background:linear-gradient(180deg,#071024 0%, #08121a 100%);color:#e6eef8;line-height:1.45}
+    .wrap{max-width:920px;margin:36px auto;padding:20px}
+    header{display:flex;gap:12px;align-items:center;justify-content:space-between}
+    h1{margin:0;font-size:1.35rem}
+    .sub{color:var(--muted);font-size:0.95rem}
+
+    .controls{display:flex;gap:8px;align-items:center}
+    .btn{background:var(--accent);border:none;color:white;padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:600}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06)}
+
+    main{display:grid;grid-template-columns:1fr 360px;gap:16px;margin-top:18px}
+    @media (max-width:880px){main{grid-template-columns:1fr} .right{order:-1}}
+
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:18px;border-radius:14px;box-shadow:0 6px 18px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03)}
+
+    /* quick demo: live preview + editor */
+    .editor{height:300px;display:flex;flex-direction:column}
+    textarea{flex:1;background:var(--card);border-radius:8px;padding:12px;border:none;color:inherit;font-family:monospace;font-size:13px}
+    .preview{height:300px;border-radius:8px;border:1px solid rgba(0,0,0,0.3);overflow:hidden}
+
+    /* right column */
+    .right .card{padding:14px}
+    label{display:block;font-size:0.9rem;margin-bottom:8px;color:var(--muted)}
+    .todo-list{list-style:none;padding:0;margin:0}
+    .todo-list li{display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;margin-bottom:8px;background:var(--glass)}
+    input[type=text]{width:100%;padding:8px;border-radius:8px;border:none;background:transparent;color:inherit}
+
+    footer{text-align:center;color:var(--muted);margin-top:16px;font-size:0.85rem}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Single-file HTML demo</h1>
+        <div class="sub">Live HTML editor + preview · small utilities</div>
+      </div>
+      <div class="controls">
+        <button class="btn" id="runBtn">Run</button>
+        <button class="btn ghost" id="resetBtn">Reset</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="card left">
+        <strong>Live editor</strong>
+        <div class="editor" style="margin-top:10px">
+          <textarea id="editor">&lt;!-- Type HTML here. Example: --&gt;
+&lt;h2&gt;Hello from the preview!&lt;/h2&gt;
+&lt;p&gt;This is dynamic content rendered inside the preview iframe.&lt;/p&gt;
+&lt;button onclick="alert('Hello!')"&gt;Click me&lt;/button&gt;
+</textarea>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="btn" id="applyBtn">Apply to preview</button>
+            <button class="btn ghost" id="formatBtn">Format (simple)</button>
+          </div>
+        </div>
+
+        <div style="margin-top:14px">
+          <strong>Preview</strong>
+          <div class="preview" id="previewWrap">
+            <iframe id="preview" style="width:100%;height:100%;border:0;background:white"></iframe>
+          </div>
+        </div>
+      </section>
+
+      <aside class="right">
+        <div class="card">
+          <strong>Quick Todo (demo)</strong>
+          <p class="sub" style="margin-top:6px">Add items, mark complete.</p>
+          <div style="margin-top:10px">
+            <label for="todoInput">New todo</label>
+            <div style="display:flex;gap:8px"><input id="todoInput" type="text" placeholder="e.g. Write README" /><button class="btn" id="addTodo">Add</button></div>
+          </div>
+          <ul class="todo-list" id="todoList" style="margin-top:10px"></ul>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <strong>Small utilities</strong>
+          <p class="sub">Copy preview HTML, download as file.</p>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="btn" id="copyHtml">Copy HTML</button>
+            <button class="btn ghost" id="downloadBtn">Download .html</button>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer>Single-file demo · edit and run. Want a different example (form, gallery, or game)?</footer>
+  </div>
+
+  <script>
+    const editor = document.getElementById('editor');
+    const preview = document.getElementById('preview');
+    const applyBtn = document.getElementById('applyBtn');
+    const formatBtn = document.getElementById('formatBtn');
+    const addTodo = document.getElementById('addTodo');
+    const todoInput = document.getElementById('todoInput');
+    const todoList = document.getElementById('todoList');
+    const copyHtml = document.getElementById('copyHtml');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const runBtn = document.getElementById('runBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    function updatePreview(){
+      const html = editor.value;
+      preview.srcdoc = html;
+    }
+
+    applyBtn.addEventListener('click', updatePreview);
+    runBtn.addEventListener('click', updatePreview);
+
+    formatBtn.addEventListener('click', ()=>{
+      // super-simple formatting: indent nested tags by 2 spaces for readability
+      const lines = editor.value.split('\n').map(l=>l.trim()).filter(Boolean);
+      editor.value = lines.join('\n');
+    });
+
+    resetBtn.addEventListener('click', ()=>{
+      editor.value = `<!-- Type HTML here. Example: -->\n<h2>Hello from the preview!</h2>\n<p>This is dynamic content rendered inside the preview iframe.</p>\n<button onclick="alert('Hello!')">Click me</button>`;
+      updatePreview();
+    });
+
+    // Todo logic (small, local-only)
+    function addTodoItem(text){
+      if(!text.trim()) return;
+      const li = document.createElement('li');
+      const chk = document.createElement('input'); chk.type='checkbox';
+      const span = document.createElement('span'); span.textContent = text;
+      const del = document.createElement('button'); del.textContent='✕'; del.title='Delete'; del.style.marginLeft='auto'; del.style.background='transparent'; del.style.border='none'; del.style.color='inherit'; del.style.cursor='pointer';
+      li.append(chk, span, del);
+      todoList.prepend(li);
+
+      chk.addEventListener('change', ()=>{
+        span.style.textDecoration = chk.checked? 'line-through':'none';
+        span.style.opacity = chk.checked? '0.6':'1';
+      });
+      del.addEventListener('click', ()=> li.remove());
+    }
+
+    addTodo.addEventListener('click', ()=>{ addTodoItem(todoInput.value); todoInput.value=''; });
+    todoInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ addTodoItem(todoInput.value); todoInput.value=''; }});
+
+    copyHtml.addEventListener('click', async ()=>{
+      try{ await navigator.clipboard.writeText(editor.value); alert('HTML copied to clipboard'); }
+      catch(e){ alert('Could not copy (permission denied)'); }
+    });
+
+    downloadBtn.addEventListener('click', ()=>{
+      const blob = new Blob([editor.value], {type:'text/html'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'preview.html'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    });
+
+    // Initialize
+    updatePreview();
+  </script>
+</body>
+</html>
