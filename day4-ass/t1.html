@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DOM & Events – Day 4</title>
+  <style>
+    body {
+      font-family: Arial;
+      padding: 20px;
+    }
+
+    .box {
+      border: 2px solid black;
+      padding: 10px;
+      margin: 5px 0;
+      background: lightgray;
+    }
+
+    .dark {
+      background: #222;
+      color: white;
+    }
+
+    img {
+      width: 200px;
+      display: block;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Task 1 -->
+<p id="text">Click the button</p>
+<button onclick="changeText()">Change Text</button>
+
+<hr>
+
+<!-- Task 2 -->
+<button onclick="changeColor('red')">Red</button>
+<button onclick="changeColor('blue')">Blue</button>
+<button onclick="changeColor('green')">Green</button>
+
+<hr>
+
+<!-- Task 3 -->
+<img id="img" src="https://via.placeholder.com/200">
+<button onclick="prevImg()">Previous</button>
+<button onclick="nextImg()">Next</button>
+
+<hr>
+
+<!-- Task 4 -->
+<p id="para">This paragraph can hide/show</p>
+<button onclick="togglePara()">Hide / Show</button>
+
+<hr>
+
+<!-- Task 5 -->
+<button onclick="decrease()">-</button>
+<span id="count">0</span>
+<button onclick="increase()">+</button>
+
+<hr>
+
+<!-- Task 6 -->
+<button onclick="addBox()">Add Box</button>
+<div id="boxContainer"></div>
+
+<hr>
+
+<!-- Task 7 -->
+<input type="text" id="username" placeholder="Enter name">
+<button onclick="printName()">Submit</button>
+<p id="output"></p>
+
+<hr>
+
+<!-- Task 8 -->
+<input type="text" id="taskInput" placeholder="New task">
+<button onclick="addTask()">Add Task</button>
+<ul id="taskList"></ul>
+
+<hr>
+
+<!-- Task 9 -->
+<img id="resizeImg" src="https://via.placeholder.com/200">
+<button onclick="small()">Small</button>
+<button onclick="large()">Large</button>
+
+<hr>
+
+<!-- Task 10 -->
+<button onclick="toggleTheme()">Toggle Theme</button>
+
+<hr>
+
+<!-- Task 11 -->
+<h3 id="clock"></h3>
+
+<hr>
+
+<!-- Task 12 -->
+<button onclick="newQuote()">New Quote</button>
+<p id="quote"></p>
+
+<script>
+/* Task 1 */
+function changeText() {
+  document.getElementById("text").innerText = "Welcome to JavaScript!";
+}
+
+/* Task 2 */
+function changeColor(color) {
+  document.body.style.background = color;
+}
+
+/* Task 3 */
+let images = [
+  "https://via.placeholder.com/200",
+  "https://via.placeholder.com/200/0000FF"
+];
+let index = 0;
+
+function nextImg() {
+  index = (index + 1) % images.length;
+  document.getElementById("img").src = images[index];
+}
+
+function prevImg() {
+  index = (index - 1 + images.length) % images.length;
+  document.getElementById("img").src = images[index];
+}
+
+/* Task 4 */
+function togglePara() {
+  let p = document.getElementById("para");
+  p.style.display = (p.style.display === "none") ? "block" : "none";
+}
+
+/* Task 5 */
+let count = 0;
+function increase() {
+  count++;
+  document.getElementById("count").innerText = count;
+}
+function decrease() {
+  if (count > 0) count--;
+  document.getElementById("count").innerText = count;
+}
+
+/* Task 6 */
+function addBox() {
+  let div = document.createElement("div");
+  div.className = "box";
+  div.innerText = "New Box Added";
+  document.getElementById("boxContainer").appendChild(div);
+}
+
+/* Task 7 */
+function printName() {
+  let name = document.getElementById("username").value;
+  document.getElementById("output").innerText = "Hello " + name;
+}
+
+/* Task 8 */
+function addTask() {
+  let task = document.getElementById("taskInput").value;
+  let li = document.createElement("li");
+  li.innerText = task;
+  document.getElementById("taskList").appendChild(li);
+}
+
+/* Task 9 */
+function small() {
+  document.getElementById("resizeImg").setAttribute("width", "100");
+}
+function large() {
+  document.getElementById("resizeImg").setAttribute("width", "300");
+}
+
+/* Task 10 */
+function toggleTheme() {
+  document.body.classList.toggle("dark");
+}
+
+/* Task 11 */
+setInterval(() => {
+  document.getElementById("clock").innerText = new Date().toLocaleTimeString();
+}, 1000);
+
+/* Task 12 */
+let quotes = [
+  "Code is poetry",
+  "Practice makes perfect",
+  "JavaScript is powerful",
+  "Never stop learning"
+];
+
+function newQuote() {
+  let q = Math.floor(Math.random() * quotes.length);
+  document.getElementById("quote").innerText = quotes[q];
+}
+</script>
+
+</body>
+</html>
